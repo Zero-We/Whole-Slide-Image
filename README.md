@@ -14,7 +14,7 @@ Whole-Slide-Image Analysis
 
 1. 数字病理全切片图像具有**超高的分辨率**（一般80,000x80,000以上），如果像普通图像一样直接输入模型进行处理会带来巨大的显存开销。
 2. 病理图像有着**高度的异质性**，同属于一种疾病的病理图像所展示的细胞形态结构会有很大的差别。由于类内差异性很大，在训练数据较少的时候，模型很容易发生过拟合现象。
-3. 全切片病理图像的**标注很难获取**。
+3. 全切片病理图像的**标注很难获取**，尤其是像细胞核实例分割任务，需要勾勒出所有细胞核的轮廓，工作量极其庞大。
 
 # Classification
 -------------------------------------------
@@ -95,13 +95,23 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 ### 全监督方法  
 由于Neeraj Kumar等人的努力，细胞核分割方面开展了几次公开挑战赛，因此出现了几个标注完备的组织病理图像细胞核实例分割数据集。譬如Kumar以及它的拓展版MoNuSeg和MoNuSAC等，CoNSep，PanNude，Lizard，TNBC等等。这促进了大量全监督细胞核分割方法的发展，但是全监督方法毕竟还是要依赖于大量标注数据，这为它的实际应用带来了很大困难。  
 
-#### Hover-net: simultaneous segmentation and classification of nuclei in multi-tissue histology images
+#### Hover-net: Simultaneous segmentation and classification of nuclei in multi-tissue histology images
 * Hover-net
 * 简介：Hover-net是全监督细胞核分割上具有很高影响力的工作，由Nasir Rajpoot等人完成，此人在细胞核分割方面有着非常多的工作。它的整体方案简洁有效 性能优异，且开源代码很规范、可读性高、易拓展。我们试过测试Hover-net迁移到不同数据集的性能，效果也是非常好的。另外，我个人还做半监督的细胞核分割，因此测试过不同标注样本下的分割性能，Hover-net在这方面也要优于很多其它方法。此外，该工作还公开了一个细胞核分割数据集CoNSeP，是一个非常充实的工作。    
 * 方法：实际上Hover-net能够同时完成细胞核分割以及分类，这里着重介绍分割分支。细胞核分割与其它自然图像分割不一样，它的语义类别相对较少，但是一张图像上会有较多object，这也使得它们各自的处理方法大有不同。细胞核实例分割既可以采用mask r-cnn先检测再分割的框架，也可以在语义分割基础上区分不同的object。目前较多的工作都属于后面一类，Hover-net也不例外。语义分割与实例分割最大的区别在于touching object，如果所有的object都是分离的，那么两者是没有区别的，我们只需要在语义分割上做连通域标记就出来实例分割结果了。但如果oject之间相互粘连，我们一般是使用watershed做后处理，因此就需要一个distance map和marker。Hover-net就是通过网络来预测horizontal distance map和vertical distance map来辅助语义分割结果分离出不同的object。所谓的horizontal distance map就是细胞内每个像素到质心的水平距离，不过把它rescale到-1到1罢了，vertical distance map同理，所以它所采用的distance map就非常简单有效且易于学习。缺点是它的后处理非常依赖于一个阈值。  
 *  [paper](https://www.sciencedirect.com/science/article/pii/S1361841519301045?via%3Dihub)  
 *  [code](https://github.com/vqdang/hover_net)[官方代码]
 <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/hovernet.png" width="800px">
+
+#### CIA-Net: Robust nuclei instance segmentation with contour-aware information aggregation
+* CIA-Net
+* 简介：19年MICCAI的工作，是Chen Hao等人完成的，他们在病理图像细胞核实例分割方面有比较多出色的工作，而他们解决细胞核分割一贯的思路是预测细胞核边缘。  
+* 方法：CIA-Net采用的是全监督细胞核实例分割的另一种思路，不同于Hover-net通过学习细胞核实例的距离图分割粘连实例，CIA-Net以及后续介绍的DCAN等工作是通过细胞核的边缘来分割粘连实例。总体思路是同时预测细胞核语义分割结果，以及细胞核边缘，再用语义分割结果减去细胞核边缘将粘连实例相互分离。但实际上，由于细胞核边缘是不规则曲线，难以直接学习得到。因此，该工作通过引入IAM特征融合模块以及Smooth Truncated Loss，从而更好地学习细胞核边缘并且利用细胞核边缘信息实现更好的细胞核实例分割。  
+*  [paper](https://link.springer.com/chapter/10.1007/978-3-030-20351-1_53)  
+*  [code][暂无]  
+<img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/cia-net.png" width="800px">
+
+#### 
 
 ### 弱监督方法  
 
