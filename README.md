@@ -40,7 +40,7 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 </br>
 #### Clinical-grade Computational Pathology Using Weakly Supervised Deep Learning on Whole Slide Images
 * MIL-RNN
-* 简介：19年Nature Medicine，在WSI分类领域最基础的工作，被大量引用及验证。在超大规模数据集（超过40,000WSI）训练WSI分类模型，在三个不同癌种的数据集上都达到超过0.98AUC。使用MAX-MIL选择出patch再用RNN模型融合patch特征进行分类，其实很大部分性能来自于MAX-MIL。
+* 简介：19年发表在Nature Medicine，是Thomas J. Fuchs他们组的工作，在WSI分类领域最基础的工作，被大量引用及验证。在超大规模数据集（超过40,000WSI）训练WSI分类模型，在三个不同癌种的数据集上都达到超过0.98AUC。使用MAX-MIL选择出patch再用RNN模型融合patch特征进行分类，其实很大部分性能来自于MAX-MIL。
 * 方法：所有patch输入ResNet34中进行一次前传，选择分类分数最高的、或者top-k，记下它们的索引。重新取这部分patch进行前传和反向传播，训练MAX-MIL。用MAX-MIL对所有patch预测出一个分数，再选出分数最高的top-k，把它们的feature输入至RNN网络中训练，融合出WSI feature再进行分类。
 *  [paper](https://www.nature.com/articles/s41591-019-0508-1)
 *  [code](https://github.com/MSKCC-Computational-Pathology/MIL-nature-medicine-2019) [官方代码]  
@@ -63,7 +63,7 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 
 #### TransMIL: Transformer based correlated multiple instance learning for whole slide image classification
 * TransMIL
-* 简介：TransMIL应该是WSI分类中首次引入Transformer网络结构的一个方法。传统的MIL方法都是基于instance相互独立假设，作者希望在此基础之上考虑同一个bag中不同instance之间的correlation，因此想到了使用self-attention机制对patch features进行融合。
+* 简介：21年发表在NIPS，TransMIL应该是WSI分类中首次引入Transformer网络结构的一个方法。传统的MIL方法都是基于instance相互独立假设，作者希望在此基础之上考虑同一个bag中不同instance之间的correlation，因此想到了使用self-attention机制对patch features进行融合。
 * 方法：通过一个ImageNet预训练的Resnet-50网络将patch编码为feature vector，然后将一张WSI所有的patch feature输入至Transformer网络中。作者对Transformer网络进行了一些改进，首先去除了MLP部分，用他们自己设计的一个PPEG模块进行替代（这是一个卷积结构）；其次，作者使用Nystrom attention近似原有的self-attention计算，该方法能够大幅减少QKV计算过程的时间和空间复杂度。考虑到WSI所含patch数量众多，远多于普通自然图像中的token数量，该近似是必要且有效的，如若不近似便要采用聚类或采样等方式减少patch的数量。
 * [paper](https://arxiv.org/pdf/2106.00908.pdf)
 * [code](https://github.com/szc19990412/TransMIL)[官方代码]  
@@ -71,11 +71,19 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 
 #### Data-efficient and weakly supervised computational pathology on whole-slide images
 * CLAM
-* 简介：21年Nature Biomedical Engineering的工作，个人觉得是继19年RNN-MIL之后一个很solid的工作，TransMIL很多实验细节也follow了这篇工作，特别是它处理WSI分类的整个pipeline是值得学习。它开源的代码涉及到了WSI的预处理，patch提取，patch encoding，model training，model evaluating以及可视化，非常全面，能够学习到很多。
+* 简介：21年发表在Nature Biomedical Engineering，是Faisal Mahmood他们组的工作，个人觉得是继19年RNN-MIL之后一个很solid的工作，TransMIL很多实验细节也follow了这篇工作，特别是它处理WSI分类的整个pipeline是值得学习。它开源的代码涉及到了WSI的预处理，patch提取，patch encoding，model training，model evaluating以及可视化，非常全面，能够学习到很多。
 * 方法：通过一个ImageNet预训练的Resnet-50网络将patch编码为feature vector，输入至CLAM网络中进行分类。作者设计的CLAM网络实际上非常类似于attention-mil，用一个fc层进行特征变换后直接接attention net计算各个feature的attention weight然后线性组合为WSI feature进行分类。不同点在于作者提出了一个instance-level clustering，从代码层面理解这个模块，其实是它在WSI分类上引入了一个patch分类的分支（目前有好几个方法都采用了这种joint learning的方式），根据attention weight排序选择靠前和靠后的8-10个，赋予两类标签（是该类或者背景）。除此之外，作者提出使用mulit-branch的方式处理多类MIL的问题。
 * [paper](https://www.nature.com/articles/s41551-020-00682-w)
 * [code](https://github.com/mahmoodlab/CLAM)[官方代码]
 <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/clam.png" width="800px">
+
+#### Detection of prostate cancer in whole-slide images through end-to-end training with image-level labels
+* Streaming  
+* 简介：21年发表于TMI，是Geert Litjens他们组的工作，该工作使用通过一种特殊的CNN结构处理超高分辨率的病理全切片图像，从一定意义上说这是一种另辟蹊径的做法。之前的方法大都将WSI切分为许多patch，再对这些patch进行处理，通过融合它们的分数或者特征进行分类。而Streaming CNN能够直接处理超高分辨率的病理图像，是真正意义上的端到端学习。对于Streaming CNN的相关工作，他们也发表在了TPAMI上。不过，目前他们所能处理到的最高分辨率也只是16384x16384，对于分辨率更高的图像只能通过streaming更多的层来处理。另外，对于微病灶的识别似乎并不太准确。  
+* 方法：针对高分辨率图像直接输入CNN网络带来的显存开销过大问题，他们采用了一种Streaming的处理方式，譬如输入至CNN中的大图像(16384x16384)，可以进一步划分为多个小图(2800x2800)，这些小图可以逐个进行前向传播，经过多层卷积得到一个小的feature map，将这些小图feature map拼接可得到大图像的feature map，再用融合后的feature map过后面的卷积层，并预测类别。而反向传播过程，同样可以将大图像的反传梯度分为多个小块，再用这些小块更新网络。值得注意的是，第一次前向传播的时候，网络是不保存这些小图的中间层特征的，它们会反传过程中重新做一次前向传播得到这些特征。整个方法的实现过程比较工程。
+* [paper](https://ieeexplore.ieee.org/abstract/document/9380553/)  
+* [code](https://github.com/DIAGNijmegen/pathology-streaming-pipeline)[官方代码]  
+<img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/streamingcnn.png" width="800px">  
 
 
 # Segmentation
