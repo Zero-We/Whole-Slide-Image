@@ -83,7 +83,7 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 * 方法：针对高分辨率图像直接输入CNN网络带来的显存开销过大问题，他们采用了一种Streaming的处理方式，譬如输入至CNN中的大图像(16384x16384)，可以进一步划分为多个小图(2800x2800)，这些小图可以逐个进行前向传播，经过多层卷积得到一个小的feature map，将这些小图feature map拼接可得到大图像的feature map，再用融合后的feature map过后面的卷积层，并预测类别。而反向传播过程，同样可以将大图像的反传梯度分为多个小块，再用这些小块更新网络。值得注意的是，第一次前向传播的时候，网络是不保存这些小图的中间层特征的，它们会反传过程中重新做一次前向传播得到这些特征。整个方法的实现过程比较工程。
 * [paper](https://ieeexplore.ieee.org/abstract/document/9380553/)  
 * [code](https://github.com/DIAGNijmegen/pathology-streaming-pipeline)[官方代码]  
-<img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/streamingcnn.png" width="800px">  
+<img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/streamingcnn.png">  
 
 
 # Segmentation
@@ -113,13 +113,19 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 
 #### CIA-Net: Robust nuclei instance segmentation with contour-aware information aggregation
 * CIA-Net
-* 简介：19年MICCAI的工作，是Chen Hao等人完成的，他们在病理图像细胞核实例分割方面有比较多出色的工作，而他们解决细胞核分割一贯的思路是预测细胞核边缘。  
+* 简介：19年MICCAI的工作，是Hao Chen等人完成的，他们在病理图像细胞核实例分割方面有比较多出色的工作，而他们解决细胞核分割一贯的思路是预测细胞核边缘。  
 * 方法：CIA-Net采用的是全监督细胞核实例分割的另一种思路，不同于Hover-net通过学习细胞核实例的距离图分割粘连实例，CIA-Net以及后续介绍的DCAN等工作是通过细胞核的边缘来分割粘连实例。总体思路是同时预测细胞核语义分割结果，以及细胞核边缘，再用语义分割结果减去细胞核边缘将粘连实例相互分离。但实际上，由于细胞核边缘是不规则曲线，难以直接学习得到。因此，该工作通过引入IAM特征融合模块以及Smooth Truncated Loss，从而更好地学习细胞核边缘并且利用细胞核边缘信息实现更好的细胞核实例分割。  
 *  [paper](https://link.springer.com/chapter/10.1007/978-3-030-20351-1_53)  
 *  [code][暂无]  
 <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/cia-net.png" width="800px">
 
-#### 
+#### DCAN: Deep contour-aware networks for object instance segmentation from histology images
+* DCAN
+* 简介：17年MIA的工作，是Hao Chen等人完成，同样是基于边缘分割粘连细胞核和腺体的研究工作。  
+* 方法：该工作预测细胞核或腺体边缘的整体思路比较简洁，通过两个decoder分别预测细胞核语义分割mask以及细胞核边缘语义分割的mask，再用整体的分割结果减去边缘分割的结果得到每一个分离的实例。  
+*  [paper](https://www.sciencedirect.com/science/article/pii/S1361841516302043)  
+*  [code][暂无]  
+*  <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/dcan.png" width="800px">
 
 ### 弱监督方法  
 
