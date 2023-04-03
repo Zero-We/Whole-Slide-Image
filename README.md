@@ -101,7 +101,7 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 3. 混合监督方法
 
 ### 全监督方法  
-由于Neeraj Kumar等人的努力，细胞核分割方面开展了几次公开挑战赛，因此出现了几个标注完备的组织病理图像细胞核实例分割数据集。譬如Kumar以及它的拓展版MoNuSeg和MoNuSAC等，CoNSep，PanNude，Lizard，TNBC等等。这促进了大量全监督细胞核分割方法的发展，但是全监督方法毕竟还是要依赖于大量标注数据，这为它的实际应用带来了很大困难。  
+细胞核分割方面开展了几次公开挑战赛，因此出现了几个标注完备的组织病理图像细胞核实例分割数据集。譬如Kumar以及它的拓展版MoNuSeg和MoNuSAC等，CoNSep，PanNude，Lizard，TNBC等等。这促进了大量全监督细胞核分割方法的发展，但是全监督方法毕竟还是要依赖于大量标注数据，这为它的实际应用带来了很大困难。  
 
 #### Hover-net: Simultaneous segmentation and classification of nuclei in multi-tissue histology images
 * Hover-net
@@ -137,6 +137,13 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 
 
 ### 弱监督方法  
+由于全监督细胞核实例分割算法需要完整勾勒出所有细胞核的轮廓以训练模型，标注工作量极其庞大且耗时，通过弱监督或无监督方式等实现数据高效的细胞核分割显然更有应用前景。该问题中，用的比较多的是通过点标注形式给定每个细胞的位置，可能还有一些方法采用的是稀疏标注的方式，即不完全标出所有的细胞。  
+
+#### Weakly supervised deep nuclei segmentation using partial points annotation in histopathology images
+* [paper](https://ieeexplore.ieee.org/abstract/document/9116833)  
+* [code][暂无]  
+*  <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/wsns.png">
+
 
 # Survival Prediction
 -------------------------------------------
