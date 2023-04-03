@@ -111,6 +111,13 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 *  [code](https://github.com/vqdang/hover_net)[官方代码]
 <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/hovernet.png" width="800px">
 
+#### Segmentation of nuclei in histopathology images by deep regression of the distance map
+* DIST
+* 简介：19年发表在TMI上的工作，解决粘连细胞核实例分割问题的其中一类方法，通过预测每个细胞核实例的距离图（细胞核内像素到最近的背景之间的距离），再进行后处理，从而可以将语义分割得到的相互粘连的细胞核分离开来。  
+* 根据Ground Truth可对图像进行连通域标记，标记连通域后可进一步做距离变换得到距离图，并对距离进行归一化。采用UNet预测细胞核语义分割mask并回归出对应的距离图，根据距离图进行后处理可分割出细胞核。  
+*  [paper](https://ieeexplore.ieee.org/abstract/document/8438559/)  
+*  [code][暂无]  
+
 #### CIA-Net: Robust nuclei instance segmentation with contour-aware information aggregation
 * CIA-Net
 * 简介：19年MICCAI的工作，是Hao Chen等人完成的，他们在病理图像细胞核实例分割方面有比较多出色的工作，而他们解决细胞核分割一贯的思路是预测细胞核边缘。  
@@ -126,6 +133,8 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 *  [paper](https://www.sciencedirect.com/science/article/pii/S1361841516302043)  
 *  [code][暂无]  
 *  <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/dcan.png" width="800px">
+
+
 
 ### 弱监督方法  
 
