@@ -116,7 +116,7 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 * 简介：19年发表在TMI上的工作，解决粘连细胞核实例分割问题的其中一类方法，通过预测每个细胞核实例的距离图（细胞核内像素到最近的背景之间的距离），再进行后处理，从而可以将语义分割得到的相互粘连的细胞核分离开来。  
 * 根据Ground Truth可对图像进行连通域标记，标记连通域后可进一步做距离变换得到距离图，并对距离进行归一化。采用UNet预测细胞核语义分割mask并回归出对应的距离图，根据距离图进行后处理可分割出细胞核。  
 *  [paper](https://ieeexplore.ieee.org/abstract/document/8438559/)  
-*  [code][暂无]  
+*  code [暂无]  
 
 #### CIA-Net: Robust nuclei instance segmentation with contour-aware information aggregation
 * CIA-Net
@@ -131,7 +131,7 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 * 简介：17年MIA的工作，是Hao Chen等人完成，同样是基于边缘分割粘连细胞核和腺体的研究工作。  
 * 方法：该工作预测细胞核或腺体边缘的整体思路比较简洁，通过两个decoder分别预测细胞核语义分割mask以及细胞核边缘语义分割的mask，再用整体的分割结果减去边缘分割的结果得到每一个分离的实例。  
 *  [paper](https://www.sciencedirect.com/science/article/pii/S1361841516302043)  
-*  [code][暂无]  
+*  code [暂无]  
 *  <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/dcan.png" width="800px">
 
 
@@ -140,8 +140,9 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 由于全监督细胞核实例分割算法需要完整勾勒出所有细胞核的轮廓以训练模型，标注工作量极其庞大且耗时，通过弱监督或无监督方式等实现数据高效的细胞核分割显然更有应用前景。该问题中，用的比较多的是通过点标注形式给定每个细胞的位置，可能还有一些方法采用的是稀疏标注的方式，即不完全标出所有的细胞。  
 
 #### Weakly supervised deep nuclei segmentation using partial points annotation in histopathology images
+* WSNS
 * [paper](https://ieeexplore.ieee.org/abstract/document/9116833)  
-* [code][暂无]  
+*  code [暂无]  
 *  <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/wsns.png">
 
 
@@ -149,8 +150,13 @@ WSI分类，包括疾病的诊断、癌症分级和分型等等。WSI分类的�
 -------------------------------------------
 病理图像分析患者预后情况，包括预测五年生存期、十年生存期、以及预测精确的存活时间。目前，研究重点转向使用多模态融合（如病理+基因）以提高预后分析能力。利用病理图像预测患者预后风险也有不少的工作，早期是先让医生从WSI中挑选ROI区域，再根据ROI区域分析患者预后，近年的工作基本都是直接根据WSI图像预测预后风险。  
 
-
-
+#### Whole slide images based cancer survival prediction using attention guided deep multiple instance learning networks
+* DeepAttnMISL
+* 简介：20年发表于MIA上的文章，Junzhou Huang他们组的工作，该组一直在做病理图像生存分析相关的研究工作。这个方法算是WSI生存分析里面比较经典的一个工作，输入全切片病理图像，通过Attention-based MIL的框架，预测患者的cox风险。  
+* 方法：对一个患者多张WSI可切分出许多的patch，通过K-Means可将这些不同的patch聚类为多个cluster的，将不同cluster的patch分别输入到一个孪生的FCN网络中（实际代码实现中，看上去好像只有一个网络），最后通过attention-based MIL融合不同cluster的patch卷积出来的特征，并经过全连接层预测cox风险值。最后采用C-Index指标比较不同方法预测的cox风险。  
+* [paper](https://www.sciencedirect.com/science/article/pii/S1361841520301535)  
+* [code](https://github.com/uta-smile/DeepAttnMISL)[官方代码]  
+*  <img src="https://github.com/Zero-We/Whole-Slide-Image/blob/main/image/deepattnmisl.png">
 
 # Public Dataset for WSIs
 -------------------------------------------
